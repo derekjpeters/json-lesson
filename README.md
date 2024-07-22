@@ -1,3 +1,13 @@
+# JSON Lesson
+
+This project demonstrates how to work with JSON data in JavaScript and create an interactive web page. The example includes fetching product data from a JSON file and displaying it with a search functionality to filter products dynamically.
+
+## Project Structure
+json-lesson/
+├── index.html
+├── styles.css
+├── scripts.js
+└── products.json
 
 ### Files
 
