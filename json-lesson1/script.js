@@ -1,168 +1,61 @@
-// JSON data: JSON (JavaScript Object Notation) is a format for storing and transporting data.
-// JSON looks similar to JavaScript objects, but there are key differences.
-// Most notably, in JSON, keys and string values must be enclosed in double quotes.
-
-const data = `{
-    "learners": [
-      {
-        "id": 1,
-        "name": "Alice",
-        "bio": "JavaScript enthusiast.",
-        "favoriteLanguageId": 2,
-        "skills": ["JavaScript", "React", "Node.js"],
-        "email": "alice@example.com",
-        "location": "New York"
-      },
-      {
-        "id": 2,
-        "name": "Bob",
-        "bio": "Full-stack developer.",
-        "favoriteLanguageId": 1,
-        "skills": ["HTML", "CSS", "JavaScript"],
-        "email": "bob@example.com",
-        "location": "San Francisco"
-      },
-      {
-        "id": 3,
-        "name": "Charlie",
-        "bio": "Backend developer.",
-        "favoriteLanguageId": 3,
-        "skills": ["Java", "Spring", "Hibernate"],
-        "email": "charlie@example.com",
-        "location": "Chicago"
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      // Fetch the JSON file named 'products.json'
+      const response = await fetch('products.json');
+  
+      // Check if the response is ok (status is 200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    ],
-    "languages": [
-      {
-        "id": 1,
-        "name": "JavaScript",
-        "description": "A versatile programming language primarily used for web development.",
-        "mdnLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
-      },
-      {
-        "id": 2,
-        "name": "Python",
-        "description": "A popular programming language known for its readability and versatility.",
-        "mdnLink": "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics"
-      },
-      {
-        "id": 3,
-        "name": "Java",
-        "description": "A high-level programming language used for building server-side applications.",
-        "mdnLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference"
-      },
-      {
-        "id": 4,
-        "name": "C#",
-        "description": "A modern programming language developed by Microsoft for a variety of applications.",
-        "mdnLink": "https://developer.mozilla.org/en-US/docs/Web/CSS"
-      },
-      {
-        "id": 5,
-        "name": "Ruby",
-        "description": "A dynamic programming language focused on simplicity and productivity.",
-        "mdnLink": "https://developer.mozilla.org/en-US/docs/Web/HTML"
-      }
-    ]
-  }`;
   
-  // Parsing JSON: Converting JSON data (which is a string) into a JavaScript object.
-  const parsedData = JSON.parse(data);
+      // Convert the response to JSON
+      const jsonObject = await response.json();
   
-  // Iterating over learners and creating profile cards.
-  parsedData.learners.forEach(learner => {
-    createProfileCard(learner);
-  });
+      // Extract the 'products' array from the JSON object
+      const products = jsonObject.products;
+      // Get the HTML element with the ID 'product-list' to display the products
+      const productList = document.getElementById('product-list');
+      // Get the HTML element with the ID 'search' for the search input field
+      const searchInput = document.getElementById('search');
   
-  // Function to create and append a profile card for each learner.
-  function createProfileCard(learner) {
-    const card = document.createElement('div');
-    card.className = 'profile-card';
+      // Define a function to display a list of products
+      const displayProducts = (products) => {
+        // Clear the current contents of the product list
+        productList.innerHTML = '';
+        // Iterate over each product in the list
+        products.forEach(product => {
+          // Create a new div element for each product
+          const productDiv = document.createElement('div');
+          // Add a class name 'product' to the new div
+          productDiv.className = 'product';
+          // Set the text content of the div to the product's details
+          productDiv.textContent = `Name: ${product.name}, Category: ${product.category}, Price: $${product.price}`;
+          // Append the new div to the product list container
+          productList.appendChild(productDiv);
+        });
+      };
   
-    // Creating and appending learner's name
-    const nameElement = document.createElement('h2');
-    nameElement.innerText = learner.name;
-    card.appendChild(nameElement);
+      // Display all products initially
+      displayProducts(products);
   
-    // Creating and appending learner's bio
-    const bioElement = document.createElement('p');
-    bioElement.innerText = `Bio: ${learner.bio}`;
-    card.appendChild(bioElement);
+      // Add an event listener to the search input field to filter products as the user types
+      searchInput.addEventListener('input', (event) => {
+        // Get the search term entered by the user, converted to lowercase
+        const searchTerm = event.target.value.toLowerCase();
+        // Filter the list of products to include only those whose name includes the search term
+        const filteredProducts = products.filter(product => 
+          product.name.toLowerCase().includes(searchTerm)
+        );
+        // Display the filtered list of products
+        displayProducts(filteredProducts);
+      });
   
-    // Finding the favorite language for the learner.
-    const favoriteLanguage = parsedData.languages.find(language => language.id === learner.favoriteLanguageId);
-  
-    // JSON vs. JavaScript Object Notation: JSON requires double quotes for keys and string values.
-    // JavaScript object notation does not have this requirement.
-  
-    if (favoriteLanguage) {
-      // Creating and appending favorite language
-      const favoriteLanguageElement = document.createElement('p');
-      const favoriteLanguageLink = document.createElement('span');
-      favoriteLanguageLink.className = 'language-link';
-      favoriteLanguageLink.innerText = favoriteLanguage.name;
-      favoriteLanguageLink.setAttribute('data-language-id', favoriteLanguage.id);
-      favoriteLanguageElement.innerText = 'Favorite Language: ';
-      favoriteLanguageElement.appendChild(favoriteLanguageLink);
-      card.appendChild(favoriteLanguageElement);
-  
-      // Creating and appending favorite language description
-      const favoriteLanguageDescription = document.createElement('p');
-      favoriteLanguageDescription.innerText = favoriteLanguage.description;
-      card.appendChild(favoriteLanguageDescription);
-    } else {
-      // Handling case where favorite language is not found
-      const noLanguageElement = document.createElement('p');
-      noLanguageElement.innerText = 'Favorite language not found.';
-      card.appendChild(noLanguageElement);
-    }
-  
-    // Creating and appending skills
-    const skillsElement = document.createElement('p');
-    skillsElement.innerText = 'Skills:';
-    card.appendChild(skillsElement);
-  
-    const skillsList = document.createElement('ul');
-    learner.skills.forEach(skill => {
-      const skillItem = document.createElement('li');
-      skillItem.innerText = skill;
-      skillsList.appendChild(skillItem);
-    });
-    card.appendChild(skillsList);
-  
-    // Creating and appending email
-    const emailElement = document.createElement('p');
-    emailElement.innerText = `Email: ${learner.email}`;
-    card.appendChild(emailElement);
-  
-    // Creating and appending location
-    const locationElement = document.createElement('p');
-    locationElement.innerText = `Location: ${learner.location}`;
-    card.appendChild(locationElement);
-  
-    // Adding a CSS class for additional styling.
-    card.classList.add('styled-card');
-  
-    // Appending the created card to the container in the DOM.
-    const container = document.getElementById('profile-container');
-    container.appendChild(card);
-  }
-  
-  // Event listener for language links
-  document.addEventListener('click', function(event) {
-    if (event.target.classList.contains('language-link')) {
-      const languageId = parseInt(event.target.getAttribute('data-language-id'), 10);
-      const language = parsedData.languages.find(lang => lang.id === languageId);
-      if (language) {
-        const languageInfo = document.getElementById('language-info');
-        document.getElementById('language-name').innerText = language.name;
-        document.getElementById('language-description').innerText = language.description;
-        document.getElementById('language-link').href = language.mdnLink;
-        languageInfo.classList.remove('hidden');
-      }
+    } catch (error) {
+      // Log any errors that occur during the fetch or JSON parsing
+      console.error('Error fetching or processing JSON:', error);
+      // Display an error message to the user
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = `<div class="error">Failed to load products: ${error.message}</div>`;
     }
   });
-  
-  // Remember: JSON keys and string values must be in double quotes.
-  // JavaScript objects can use single quotes or no quotes at all for keys if they are valid identifiers.
   
