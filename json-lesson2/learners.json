@@ -1,0 +1,34 @@
+{
+    "learners": [
+        {
+            "id": 1,
+            "name": "Robert",
+            "bio": "ActionScript Master",
+            "favoriLanguageId": 1,
+            "skills": ["JavaScript", "React", "ActionScript"],
+            "email": "robert@email.com",
+            "location": "WI"
+        },
+
+        {
+            "id": 2,
+            "name": "Zac",
+            "bio": "JavaScript Master",
+            "favoriLanguageId": 1,
+            "skills": ["JavaScript", "React", "Python"],
+            "email": "zac@email.com",
+            "location": "AL"
+        },
+
+        {
+            "id": 3,
+            "name": "Derek",
+            "bio": "Enjoy's Python",
+            "favoriLanguageId": 2,
+            "skills": ["JavaScript", "Apex", "Python"],
+            "email": "derek@email.com",
+            "location": "TN"
+        }
+        
+    ]
+}
